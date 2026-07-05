@@ -1,0 +1,10 @@
+{
+  "name": "AI English Coach",
+  "description": "An AI-powered English learning platform featuring interactive lessons, voice conversations, and personalized feedback.",
+  "requestFramePermissions": [
+    "microphone"
+  ],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
