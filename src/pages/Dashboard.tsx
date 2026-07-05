@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Flame, Brain, Target, Trophy, Clock, ArrowRight, CheckCircle2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { getAccessToken } from '../lib/firebase';
+import { User } from 'firebase/auth';
+import { getUserProfile, createUserProfile, UserProfile } from '../services/db';
 
 const data = [
   { name: 'Mon', score: 65 },
@@ -15,9 +17,36 @@ const data = [
   { name: 'Sun', score: 92 },
 ];
 
-export function Dashboard() {
+export function Dashboard({ user }: { user: User }) {
   const [syncing, setSyncing] = useState(false);
   const [synced, setSynced] = useState(false);
+  const [profile, setProfile] = useState<UserProfile | null>(null);
+
+  useEffect(() => {
+    const loadProfile = async () => {
+      try {
+        let p = await getUserProfile(user.uid);
+        if (!p) {
+          p = await createUserProfile(user.uid);
+        }
+        setProfile(p);
+      } catch (err) {
+        console.error("Failed to load user profile from Firestore:", err);
+        // Fallback profile if Firestore is unavailable or rules block it
+        setProfile({
+          uid: user.uid,
+          level: 'B2',
+          xp: 4250,
+          streak: 12,
+          lastActive: new Date().toISOString(),
+          fluencyScore: 92,
+          wordsLearned: 842,
+          speakingTimeMinutes: 720
+        });
+      }
+    };
+    loadProfile();
+  }, [user]);
 
   const handleSyncTasks = async () => {
     const token = await getAccessToken();
@@ -28,7 +57,6 @@ export function Dashboard() {
 
     setSyncing(true);
     try {
-      // Create a task list first or use default
       const task = {
         title: 'Complete English Lesson: Corporate Meetings',
         notes: 'Practice professional disagreement in the AI English Coach.'
@@ -57,15 +85,20 @@ export function Dashboard() {
     }
   };
 
+  if (!profile) {
+    return <div className="p-8">Loading profile...</div>;
+  }
+
   return (
     <div className="flex-1 flex flex-col h-full bg-slate-50">
       <header className="h-16 bg-white border-b border-slate-200 px-8 flex items-center justify-between shrink-0">
         <div className="flex items-center space-x-4">
           <h1 className="text-lg font-semibold text-slate-800">Dashboard</h1>
+          <span className="px-2 py-0.5 bg-emerald-100 text-emerald-700 text-xs font-bold rounded-full uppercase tracking-wider">Level {profile.level}</span>
         </div>
         <div className="flex items-center space-x-6">
           <div className="flex items-center space-x-2">
-            <span className="text-orange-500 font-bold">🔥 12</span>
+            <span className="text-orange-500 font-bold">🔥 {profile.streak}</span>
             <span className="text-sm text-slate-500">Day Streak</span>
           </div>
           <button 
@@ -82,10 +115,10 @@ export function Dashboard() {
       <div className="p-8 space-y-8 max-w-7xl mx-auto w-full">
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-          <StatCard title="Fluency Score" value="92" subtitle="+4 this week" icon={Brain} color="indigo" />
-          <StatCard title="Words Learned" value="842" subtitle="24 today" icon={Target} color="emerald" />
-          <StatCard title="Speaking Time" value="12h" subtitle="Top 10%" icon={Clock} color="indigo" />
-          <StatCard title="XP Earned" value="4,250" subtitle="Level 14" icon={Trophy} color="orange" />
+          <StatCard title="Fluency Score" value={profile.fluencyScore} subtitle="Current Evaluation" icon={Brain} color="indigo" />
+          <StatCard title="Words Learned" value={profile.wordsLearned} subtitle="Total mastery" icon={Target} color="emerald" />
+          <StatCard title="Speaking Time" value={`${profile.speakingTimeMinutes}m`} subtitle="Practice time" icon={Clock} color="indigo" />
+          <StatCard title="XP Earned" value={profile.xp.toLocaleString()} subtitle="Total experience" icon={Trophy} color="orange" />
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">

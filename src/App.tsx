@@ -4,9 +4,12 @@ import { LessonPage } from "./pages/LessonPage";
 import { VoiceConversation } from "./pages/VoiceConversation";
 import { ChatbotPage } from "./pages/ChatbotPage";
 import { AuthPage } from "./pages/AuthPage";
+import { CoursesPage } from "./pages/CoursesPage";
+import { WritingCoachPage } from "./pages/WritingCoachPage";
+import { InterviewPrepPage } from "./pages/InterviewPrepPage";
 import { Layout } from "./components/Layout";
 import { useEffect, useState } from "react";
-import { getAuth, onAuthStateChanged, User } from "firebase/auth";
+import { onAuthStateChanged, User } from "firebase/auth";
 import { auth } from "./lib/firebase";
 
 export default function App() {
@@ -37,10 +40,13 @@ export default function App() {
     <BrowserRouter>
       <Layout>
         <Routes>
-          <Route path="/" element={<Dashboard />} />
-          <Route path="/lesson" element={<LessonPage />} />
-          <Route path="/conversation" element={<VoiceConversation />} />
-          <Route path="/chat" element={<ChatbotPage />} />
+          <Route path="/" element={<Dashboard user={user} />} />
+          <Route path="/courses" element={<CoursesPage />} />
+          <Route path="/lesson/:id" element={<LessonPage user={user} />} />
+          <Route path="/conversation" element={<VoiceConversation user={user} />} />
+          <Route path="/writing" element={<WritingCoachPage user={user} />} />
+          <Route path="/interview" element={<InterviewPrepPage user={user} />} />
+          <Route path="/chat" element={<ChatbotPage user={user} />} />
         </Routes>
       </Layout>
     </BrowserRouter>

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { googleSignIn } from '../lib/firebase';
-import { Sparkles, Brain, Mic, MessageSquare } from 'lucide-react';
+import { Sparkles, Brain, Mic, MessageSquare, GraduationCap } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 export function AuthPage() {
@@ -30,7 +30,7 @@ export function AuthPage() {
             className="flex justify-center mb-6"
           >
             <div className="h-16 w-16 bg-indigo-600 rounded-2xl flex items-center justify-center shadow-lg shadow-indigo-600/20">
-              <span className="text-white font-bold text-3xl">F</span>
+              <GraduationCap className="h-8 w-8 text-white" />
             </div>
           </motion.div>
           <h2 className="text-3xl font-bold tracking-tight mb-2 text-slate-900">AI English Coach</h2>

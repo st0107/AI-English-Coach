@@ -1,5 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Send, Bot, User, Sparkles } from 'lucide-react';
+import { Send, Bot, User as UserIcon, Sparkles } from 'lucide-react';
+import { User } from 'firebase/auth';
+import { addXP } from '../services/db';
 
 interface Message {
   id: string;
@@ -7,7 +9,7 @@ interface Message {
   content: string;
 }
 
-export function ChatbotPage() {
+export function ChatbotPage({ user }: { user: User }) {
   const [messages, setMessages] = useState<Message[]>([
     { id: '1', role: 'model', content: "Hello! I'm your AI English Tutor. We can chat about your day, practice specific scenarios like interviews, or focus on grammar. What would you like to do?" }
   ]);
@@ -29,8 +31,6 @@ export function ChatbotPage() {
     setLoading(true);
 
     try {
-      // In a real app with multi-turn history, we would send the full history.
-      // Here we just send the prompt with a system instruction.
       const response = await fetch('/api/generate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -47,8 +47,10 @@ export function ChatbotPage() {
       setMessages(prev => [...prev, {
         id: (Date.now() + 1).toString(),
         role: 'model',
-        content: data.result || "I'm sorry, I didn't understand that."
+        content: data.text || "I'm sorry, I didn't understand that."
       }]);
+      
+      await addXP(user.uid, 10);
     } catch (err) {
       console.error(err);
       setMessages(prev => [...prev, {
@@ -82,7 +84,7 @@ export function ChatbotPage() {
               </div>
             ) : (
               <div className="w-10 h-10 bg-slate-200 rounded-full shrink-0 flex items-center justify-center text-slate-500">
-                <User size={20} />
+                <UserIcon size={20} />
               </div>
             )}
             

@@ -31,6 +31,70 @@ async function startServer() {
     res.json({ status: 'ok' });
   });
 
+  app.post('/api/generate-lesson', async (req, res) => {
+    try {
+      const { title, type, context } = req.body;
+      const prompt = `Generate a highly structured English lesson for Software Engineers and professionals.
+      Topic: ${title}
+      Type: ${type}
+      Context: ${context}
+      
+      Output MUST be valid JSON with the following structure:
+      {
+        "objectives": ["string"],
+        "introduction": "string",
+        "conceptExplanation": "string",
+        "vocabulary": [{ "word": "string", "meaning": "string", "example": "string", "ipa": "string" }],
+        "grammarPoint": { "topic": "string", "explanation": "string", "example": "string" },
+        "practiceText": "string (for reading/speaking)",
+        "quiz": [{ "question": "string", "options": ["string"], "correctAnswerIndex": number, "explanation": "string" }]
+      }
+      Do NOT include markdown formatting like \`\`\`json. Output raw JSON.`;
+
+      const interaction = await ai.interactions.create({
+        model: 'gemini-3.5-flash',
+        input: prompt,
+      });
+      let out = interaction.output_text || "{}";
+      out = out.replace(/```json/g, '').replace(/```/g, '').trim();
+      res.json(JSON.parse(out));
+    } catch (err: any) {
+      console.error(err);
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.post('/api/evaluate-writing', async (req, res) => {
+    try {
+      const { text, context } = req.body;
+      const prompt = `Evaluate the following text written by a non-native English speaker for a corporate/tech context.
+      Context: ${context}
+      Text to evaluate: "${text}"
+
+      Provide feedback as valid JSON with the following structure:
+      {
+        "score": number (0-10),
+        "grammarFeedback": "string",
+        "vocabularyFeedback": "string",
+        "toneFeedback": "string",
+        "improvedVersion": "string",
+        "keyMistakes": ["string"]
+      }
+      Do NOT include markdown formatting like \`\`\`json. Output raw JSON.`;
+
+      const interaction = await ai.interactions.create({
+        model: 'gemini-3.5-flash',
+        input: prompt,
+      });
+      let out = interaction.output_text || "{}";
+      out = out.replace(/```json/g, '').replace(/```/g, '').trim();
+      res.json(JSON.parse(out));
+    } catch (err: any) {
+      console.error(err);
+      res.status(500).json({ error: err.message });
+    }
+  });
+
   app.post('/api/generate', async (req, res) => {
     try {
       const { prompt, systemInstruction } = req.body;
@@ -52,7 +116,7 @@ async function startServer() {
       const interaction = await ai.interactions.create({
         model: 'gemini-3.1-flash-tts-preview',
         input: text,
-        response_modalities: ['AUDIO']
+        response_modalities: ['audio']
       });
       
       let audioBase64 = null;

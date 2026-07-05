@@ -1,14 +1,16 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, MessageSquare, Mic, BookOpen, LogOut } from 'lucide-react';
+import { LayoutDashboard, MessageSquare, Mic, BookOpen, LogOut, GraduationCap, Edit3, Briefcase } from 'lucide-react';
 import { logout } from '../lib/firebase';
 
 export function Layout({ children }: { children: React.ReactNode }) {
   const navItems = [
     { to: '/', icon: LayoutDashboard, label: 'Dashboard' },
-    { to: '/lesson', icon: BookOpen, label: 'Lessons' },
+    { to: '/courses', icon: BookOpen, label: 'Courses' },
     { to: '/conversation', icon: Mic, label: 'Voice Coach' },
-    { to: '/chat', icon: MessageSquare, label: 'Chat Tutor' },
+    { to: '/writing', icon: Edit3, label: 'Writing Coach' },
+    { to: '/interview', icon: Briefcase, label: 'Interview Prep' },
+    { to: '/chat', icon: MessageSquare, label: 'AI Tutor' },
   ];
 
   return (
@@ -18,7 +20,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <div className="h-16 flex items-center px-6 border-b border-slate-200">
           <div className="flex items-center gap-2 font-semibold text-lg text-slate-800">
             <div className="h-8 w-8 bg-indigo-600 rounded-xl flex items-center justify-center">
-              <span className="text-white font-bold">F</span>
+              <GraduationCap className="h-5 w-5 text-white" />
             </div>
             AI Coach
           </div>
