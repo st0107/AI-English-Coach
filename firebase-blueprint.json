@@ -1,0 +1,43 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "User Profile",
+      "description": "User profile with language learning stats",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "level": { "type": "string" },
+        "xp": { "type": "number" },
+        "streak": { "type": "number" },
+        "lastActive": { "type": "string" },
+        "fluencyScore": { "type": "number" },
+        "wordsLearned": { "type": "number" },
+        "speakingTimeMinutes": { "type": "number" }
+      },
+      "required": ["uid", "level", "xp", "streak", "lastActive", "fluencyScore", "wordsLearned", "speakingTimeMinutes"]
+    },
+    "VocabWord": {
+      "title": "Vocabulary Word",
+      "description": "Saved vocabulary word",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "word": { "type": "string" },
+        "meaning": { "type": "string" },
+        "mastery": { "type": "number" },
+        "lastReviewed": { "type": "string" }
+      },
+      "required": ["uid", "word", "meaning", "mastery", "lastReviewed"]
+    }
+  },
+  "firestore": {
+    "users/{userId}": {
+      "schema": "UserProfile",
+      "description": "User profiles"
+    },
+    "vocabulary/{wordId}": {
+      "schema": "VocabWord",
+      "description": "User vocabulary words"
+    }
+  }
+}

@@ -5,7 +5,7 @@
     @apply space-y-4;
   }
   .markdown-body p {
-    @apply leading-relaxed;
+    @apply leading-relaxed whitespace-pre-wrap;
   }
   .markdown-body ul {
     @apply list-disc list-inside space-y-1 my-2;

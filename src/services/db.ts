@@ -37,13 +37,21 @@ export const createUserProfile = async (uid: string, initialLevel: string = 'B1'
 };
 
 export const updateUserStats = async (uid: string, stats: Partial<UserProfile>) => {
-  const docRef = doc(db, 'users', uid);
-  await updateDoc(docRef, stats);
+  try {
+    const docRef = doc(db, 'users', uid);
+    await updateDoc(docRef, stats);
+  } catch (err) {
+    console.error("Failed to update user stats:", err);
+  }
 };
 
 export const addXP = async (uid: string, amount: number) => {
-  const docRef = doc(db, 'users', uid);
-  await updateDoc(docRef, { xp: increment(amount) });
+  try {
+    const docRef = doc(db, 'users', uid);
+    await updateDoc(docRef, { xp: increment(amount) });
+  } catch (err) {
+    console.error("Failed to add XP:", err);
+  }
 };
 
 // Vocabulary
@@ -57,19 +65,23 @@ export interface VocabWord {
 }
 
 export const saveVocabWord = async (uid: string, word: string, meaning: string) => {
-  const vocabRef = collection(db, 'vocabulary');
-  const q = query(vocabRef, where('uid', '==', uid), where('word', '==', word));
-  const querySnapshot = await getDocs(q);
-  
-  if (querySnapshot.empty) {
-    await addDoc(vocabRef, {
-      uid,
-      word,
-      meaning,
-      mastery: 0,
-      lastReviewed: new Date().toISOString()
-    });
-    const userRef = doc(db, 'users', uid);
-    await updateDoc(userRef, { wordsLearned: increment(1) });
+  try {
+    const vocabRef = collection(db, 'vocabulary');
+    const q = query(vocabRef, where('uid', '==', uid), where('word', '==', word));
+    const querySnapshot = await getDocs(q);
+    
+    if (querySnapshot.empty) {
+      await addDoc(vocabRef, {
+        uid,
+        word,
+        meaning,
+        mastery: 0,
+        lastReviewed: new Date().toISOString()
+      });
+      const userRef = doc(db, 'users', uid);
+      await updateDoc(userRef, { wordsLearned: increment(1) });
+    }
+  } catch (err) {
+    console.error("Failed to save vocabulary word:", err);
   }
 };
