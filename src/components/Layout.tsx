@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, MessageSquare, Mic, BookOpen, LogOut, GraduationCap, Edit3, Briefcase } from 'lucide-react';
+import { LayoutDashboard, MessageSquare, Mic, BookOpen, LogOut, GraduationCap, Edit3, Briefcase, Award } from 'lucide-react';
 import { logout } from '../lib/firebase';
 
 export function Layout({ children }: { children: React.ReactNode }) {
@@ -11,6 +11,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
     { to: '/writing', icon: Edit3, label: 'Writing Coach' },
     { to: '/interview', icon: Briefcase, label: 'Interview Prep' },
     { to: '/chat', icon: MessageSquare, label: 'AI Tutor' },
+    { to: '/certification', icon: Award, label: 'Certifications' },
   ];
 
   return (

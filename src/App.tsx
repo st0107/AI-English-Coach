@@ -7,6 +7,7 @@ import { AuthPage } from "./pages/AuthPage";
 import { CoursesPage } from "./pages/CoursesPage";
 import { WritingCoachPage } from "./pages/WritingCoachPage";
 import { InterviewPrepPage } from "./pages/InterviewPrepPage";
+import { CertificationPage } from "./pages/CertificationPage";
 import { Layout } from "./components/Layout";
 import { useEffect, useState } from "react";
 import { onAuthStateChanged, User } from "firebase/auth";
@@ -47,6 +48,7 @@ export default function App() {
           <Route path="/writing" element={<WritingCoachPage user={user} />} />
           <Route path="/interview" element={<InterviewPrepPage user={user} />} />
           <Route path="/chat" element={<ChatbotPage user={user} />} />
+          <Route path="/certification" element={<CertificationPage user={user} />} />
         </Routes>
       </Layout>
     </BrowserRouter>
